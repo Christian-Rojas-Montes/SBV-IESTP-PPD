@@ -1,0 +1,2 @@
+cd C:\xampp\htdocs\Biblioteca_Virtual
+php -S localhost:8080

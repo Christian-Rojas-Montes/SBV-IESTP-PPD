@@ -1,0 +1,21 @@
+# Local databases and backups may contain personal information.
+/database/*.sqlite
+/database/*.sqlite3
+/database/*.db
+/database/*.sqlite-*
+/database/*.db-*
+
+# Uploaded library files and local configuration.
+/storage/uploads/
+/.env
+/.env.*
+!/.env.example
+/vendor/
+/logs/
+/backups/
+
+# Editor and operating-system files.
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
