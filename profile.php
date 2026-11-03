@@ -37,8 +37,7 @@ $reservations = $db->prepare('SELECT r.*, b.title FROM reservations r INNER JOIN
 $reservations->execute([$user['id']]);
 $reservations = $reservations->fetchAll();
 $roleLabels = [
-    'administrador' => 'Administrador',
-    'bibliotecario' => 'Bibliotecario',
+    'personal' => 'Personal',
     'docente' => 'Docente',
     'estudiante' => 'Estudiante',
 ];
@@ -65,10 +64,11 @@ $roleLabels = [
             <nav class="main-nav">
                 <a href="dashboard.php">Resumen</a>
                 <a href="catalog.php">Catálogo</a>
-                <?php if (hasRole('administrador', 'bibliotecario')): ?><a href="books.php">Inventario</a><?php endif; ?>
+                <?php if (hasRole('personal')): ?><a href="books.php">Inventario</a><?php endif; ?>
                 <a href="loans.php">Préstamos</a>
-                <?php if (hasRole('administrador')): ?><a href="users.php">Usuarios</a><?php endif; ?>
-                <?php if (hasRole('administrador', 'bibliotecario')): ?><a href="reports.php">Reportes</a><?php endif; ?>
+                <?php if (hasRole('personal')): ?><a href="users.php">Usuarios</a><?php endif; ?>
+                <?php if (hasRole('personal')): ?><a href="reports.php">Reportes</a><?php endif; ?>
+                <?php if (hasRole('personal')): ?><a href="audit.php">Auditoría</a><?php endif; ?>
                 <a class="active" href="profile.php">Mi perfil</a>
             </nav>
             <div class="user-box">
@@ -91,6 +91,21 @@ $roleLabels = [
                         <p><?= esc($user['email']) ?></p>
                         <span class="badge <?= $user['role'] === 'estudiante' ? 'physical' : 'digital' ?>"><?= esc($roleLabels[$user['role']] ?? $user['role']) ?></span>
                     </div>
+                </div>
+            </section>
+
+            <section class="panel security-devices" data-webauthn-devices>
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">WebAuthn / FIDO2</p>
+                        <h3>Seguridad y Dispositivos</h3>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-webauthn-register>Registrar este dispositivo</button>
+                </div>
+                <p class="field-help">Vincula una huella, llave de seguridad o passkey para autorizar inicios de sesión rápidos.</p>
+                <p class="alert info" data-webauthn-message role="status" aria-live="polite" hidden></p>
+                <div class="device-list" data-webauthn-device-list>
+                    <p class="empty-state">Cargando dispositivos vinculados…</p>
                 </div>
             </section>
 

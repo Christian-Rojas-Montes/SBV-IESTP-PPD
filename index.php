@@ -77,6 +77,16 @@ if (!in_array($selectedRole, ['estudiante', 'docente', 'personal'], true)) {
 
             <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
         </form>
+        <section class="quick-login" data-webauthn-login aria-live="polite">
+            <div class="quick-login-divider"><span>o continúa con tu dispositivo</span></div>
+            <button type="button" class="btn btn-secondary btn-block" data-quick-login-start>Inicio de Sesión Rápido</button>
+            <p class="field-help" data-quick-login-status>Autoriza el acceso desde un dispositivo móvil que ya tengas vinculado.</p>
+            <div class="quick-login-wait" data-quick-login-wait hidden>
+                <strong>Solicitud enviada al móvil</strong>
+                <span data-quick-login-countdown>Expira en 5:00</span>
+                <button type="button" class="btn btn-light btn-small" data-quick-login-cancel>Cancelar solicitud</button>
+            </div>
+        </section>
         <p class="auth-switch">¿Eres estudiante nuevo? <a href="register.php">Crea tu cuenta</a></p>
         <p class="auth-footer">Sistema de Biblioteca Virtual · IESTP “Pedro P. Díaz”</p>
     </div>

@@ -2,15 +2,14 @@
 require __DIR__ . '/app.php';
 requireLogin();
 
-if (!hasRole('administrador')) {
+if (!hasRole('personal')) {
     http_response_code(403);
     exit('No tienes permisos para administrar usuarios.');
 }
 
 $db = db();
 $roles = [
-    'administrador' => 'Administrador',
-    'bibliotecario' => 'Bibliotecario',
+    'personal' => 'Personal',
     'docente' => 'Docente',
     'estudiante' => 'Estudiante',
 ];
@@ -61,15 +60,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 redirect('users.php');
             }
 
-            if ($id === (int) currentUser()['id'] && $role !== 'administrador') {
-                setFlash('No puedes quitarte el rol de administrador desde tu propia cuenta.');
+            if ($id === (int) currentUser()['id'] && $role !== 'personal') {
+                setFlash('No puedes quitarte el rol de personal desde tu propia cuenta.');
                 redirect('users.php?edit=' . $id);
             }
 
-            if ((int) $targetUser['is_active'] === 1 && $targetUser['role'] === 'administrador' && $role !== 'administrador') {
-                $activeAdmins = (int) $db->query("SELECT COUNT(*) FROM users WHERE role = 'administrador' AND is_active = 1")->fetchColumn();
-                if ($activeAdmins <= 1) {
-                    setFlash('Debe permanecer al menos una cuenta de administrador activa.');
+            if ((int) $targetUser['is_active'] === 1 && $targetUser['role'] === 'personal' && $role !== 'personal') {
+                $activeStaff = (int) $db->query("SELECT COUNT(*) FROM users WHERE role = 'personal' AND is_active = 1")->fetchColumn();
+                if ($activeStaff <= 1) {
+                    setFlash('Debe permanecer al menos una cuenta de personal activa.');
                     redirect('users.php?edit=' . $id);
                 }
             }
@@ -111,10 +110,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('users.php');
         }
 
-        if ($newStatus === 0 && $target['role'] === 'administrador') {
-            $activeAdmins = (int) $db->query("SELECT COUNT(*) FROM users WHERE role = 'administrador' AND is_active = 1")->fetchColumn();
-            if ($activeAdmins <= 1) {
-                setFlash('Debe permanecer al menos una cuenta de administrador activa.');
+        if ($newStatus === 0 && $target['role'] === 'personal') {
+            $activeStaff = (int) $db->query("SELECT COUNT(*) FROM users WHERE role = 'personal' AND is_active = 1")->fetchColumn();
+            if ($activeStaff <= 1) {
+                setFlash('Debe permanecer al menos una cuenta de personal activa.');
                 redirect('users.php');
             }
         }
@@ -162,6 +161,7 @@ $user = currentUser();
                 <a href="loans.php">Préstamos</a>
                 <a class="active" href="users.php">Usuarios</a>
                 <a href="reports.php">Reportes</a>
+                <a href="audit.php">Auditoría</a>
             </nav>
             <div class="user-box">
                 <span><?= esc($user['full_name']) ?></span>
@@ -193,8 +193,7 @@ $user = currentUser();
             <section class="role-shortcuts" aria-label="Crear cuentas por perfil">
                 <a class="btn btn-secondary" href="users.php?new=estudiante#user-form">＋ Estudiante</a>
                 <a class="btn btn-secondary" href="users.php?new=docente#user-form">＋ Docente</a>
-                <a class="btn btn-secondary" href="users.php?new=bibliotecario#user-form">＋ Bibliotecario</a>
-                <a class="btn btn-secondary" href="users.php?new=administrador#user-form">＋ Administrador</a>
+                <a class="btn btn-secondary" href="users.php?new=personal#user-form">＋ Personal</a>
             </section>
 
             <section class="panel form-panel" id="user-form">

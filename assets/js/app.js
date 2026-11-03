@@ -49,3 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+const appScript = document.currentScript || Array.from(document.scripts).find((script) => script.src.endsWith('/assets/js/app.js'));
+if (appScript) {
+    const webauthnScript = document.createElement('script');
+    webauthnScript.src = new URL('webauthn.js', appScript.src).href;
+    webauthnScript.defer = true;
+    document.head.appendChild(webauthnScript);
+}

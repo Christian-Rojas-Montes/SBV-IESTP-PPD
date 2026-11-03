@@ -24,7 +24,7 @@ if (!$user || !password_verify($password, $user['password'])) {
 $profileMatches = match ($profile) {
     'estudiante' => $user['role'] === 'estudiante',
     'docente' => $user['role'] === 'docente',
-    'personal' => in_array($user['role'], ['administrador', 'bibliotecario'], true),
+    'personal' => $user['role'] === 'personal',
 };
 
 if (!$profileMatches) {
@@ -33,5 +33,5 @@ if (!$profileMatches) {
 
 session_regenerate_id(true);
 $_SESSION['user_id'] = (int) $user['id'];
-logAudit('Inicio de sesión', 'Acceso mediante perfil: ' . $profile);
+logAudit('LOGIN_PASSWORD', 'Acceso mediante perfil: ' . $profile);
 redirect('dashboard.php');

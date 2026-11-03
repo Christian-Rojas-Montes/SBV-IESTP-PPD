@@ -3,7 +3,7 @@ require __DIR__ . '/app.php';
 requireLogin();
 
 $db = db();
-$isStaff = hasRole('administrador', 'bibliotecario');
+$isStaff = hasRole('personal');
 $totalBooks = (int) $db->query('SELECT COUNT(*) FROM books')->fetchColumn();
 $availableBooks = (int) $db->query('SELECT SUM(copies_available) FROM books')->fetchColumn();
 $activeLoansQuery = $isStaff
@@ -23,7 +23,7 @@ $digitalBooks = (int) $db->query('SELECT COUNT(*) FROM books WHERE type = "digit
 $recentLogs = $isStaff ? $db->query('SELECT a.*, u.full_name FROM audit_logs a LEFT JOIN users u ON u.id = a.user_id ORDER BY a.created_at DESC LIMIT 5')->fetchAll() : [];
 $topBooks = $db->query('SELECT b.title, COUNT(l.id) AS prestamos FROM books b LEFT JOIN loans l ON l.book_id = b.id GROUP BY b.id ORDER BY prestamos DESC LIMIT 5')->fetchAll();
 $user = currentUser();
-$roleMap = ['administrador' => 'Administrador', 'bibliotecario' => 'Bibliotecario', 'docente' => 'Docente', 'estudiante' => 'Estudiante'];
+$roleMap = ['personal' => 'Personal', 'docente' => 'Docente', 'estudiante' => 'Estudiante'];
 ?>
 <!doctype html>
 <html lang="es">
@@ -48,10 +48,11 @@ $roleMap = ['administrador' => 'Administrador', 'bibliotecario' => 'Bibliotecari
             <nav class="main-nav">
                 <a class="active" href="dashboard.php">Resumen</a>
                 <a href="catalog.php">Catálogo</a>
-                <?php if (hasRole('administrador', 'bibliotecario')): ?><a href="books.php">Inventario</a><?php endif; ?>
+                <?php if (hasRole('personal')): ?><a href="books.php">Inventario</a><?php endif; ?>
                 <a href="loans.php">Préstamos</a>
-                <?php if (hasRole('administrador')): ?><a href="users.php">Usuarios</a><?php endif; ?>
-                <?php if (hasRole('administrador', 'bibliotecario')): ?><a href="reports.php">Reportes</a><?php endif; ?>
+                <?php if (hasRole('personal')): ?><a href="users.php">Usuarios</a><?php endif; ?>
+                <?php if (hasRole('personal')): ?><a href="reports.php">Reportes</a><?php endif; ?>
+                <?php if (hasRole('personal')): ?><a href="audit.php">Auditoría</a><?php endif; ?>
             </nav>
 
             <div class="user-box">
@@ -71,12 +72,13 @@ $roleMap = ['administrador' => 'Administrador', 'bibliotecario' => 'Bibliotecari
                 </div>
             </div>
 
-            <?php if (hasRole('administrador', 'bibliotecario')): ?>
+            <?php if (hasRole('personal')): ?>
                 <section class="quick-actions" aria-label="Accesos rápidos">
                     <a class="quick-action" href="books.php"><span class="quick-icon">＋</span><span><strong>Registrar material</strong><small>Agregar un libro al inventario</small></span><b>→</b></a>
                     <a class="quick-action" href="loans.php"><span class="quick-icon">↗</span><span><strong>Nuevo préstamo</strong><small>Registrar una operación bibliotecaria</small></span><b>→</b></a>
-                    <?php if (hasRole('administrador')): ?><a class="quick-action" href="users.php"><span class="quick-icon">♙</span><span><strong>Crear usuario</strong><small>Administrar cuentas y permisos</small></span><b>→</b></a><?php endif; ?>
+                    <?php if (hasRole('personal')): ?><a class="quick-action" href="users.php"><span class="quick-icon">♙</span><span><strong>Crear usuario</strong><small>Administrar cuentas y permisos</small></span><b>→</b></a><?php endif; ?>
                     <a class="quick-action" href="reports.php"><span class="quick-icon">▤</span><span><strong>Ver reportes</strong><small>Revisar indicadores y morosidad</small></span><b>→</b></a>
+                    <a class="quick-action" href="audit.php"><span class="quick-icon">◷</span><span><strong>Auditoría</strong><small>Consultar eventos del sistema</small></span><b>→</b></a>
                 </section>
             <?php else: ?>
                 <section class="quick-actions" aria-label="Accesos rápidos">

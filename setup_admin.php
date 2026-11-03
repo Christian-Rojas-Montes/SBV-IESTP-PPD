@@ -7,7 +7,7 @@ if (PHP_SAPI !== 'cli') {
 require __DIR__ . '/app.php';
 
 $db = db();
-$adminCount = (int) $db->query("SELECT COUNT(*) FROM users WHERE role = 'administrador'")->fetchColumn();
+$adminCount = (int) $db->query("SELECT COUNT(*) FROM users WHERE role = 'personal'")->fetchColumn();
 if ($adminCount > 0) {
     fwrite(STDERR, "Ya existe una cuenta de administrador. No se creó ninguna cuenta.\n");
     exit(1);
@@ -37,6 +37,6 @@ if ($existing->fetch()) {
 }
 
 $db->prepare('INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, ?)')
-    ->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), 'administrador']);
+    ->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), 'personal']);
 
 fwrite(STDOUT, "Cuenta de administrador creada correctamente. Ya puedes iniciar sesión.\n");
